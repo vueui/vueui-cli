@@ -1,0 +1,13 @@
+{
+    "name": "vueui-<%= module %>",
+    "version": "0.1.0",
+    "description": "<%= description %>",
+    "dependencies": {
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://<%= repo %>.git"
+    },
+    "author": "Agon Bina <agon_bina@hotmail.com>",
+    "license": "MIT"
+}
