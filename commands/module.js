@@ -7,10 +7,21 @@ var path = require('path'),
     gulp = require('gulp'),
     template = require('gulp-template'),
     print = require('gulp-print'),
+    rename = require('gulp-rename'),
     set = require('101/set'),
     last = require('101/last')
 
-var templates = [ 'package.json', 'README.md', 'LICENSE', 'index.js' ]
+var templates = [ 
+    'package.json', 
+    'README.md', 
+    'LICENSE', 
+    'index.js',
+    'module.js',
+    '.gitignore',
+    'example/webpack.config.js',
+    'example/main.js',
+    'example/index.html'
+]
 
 
 var Module = Command.extend({
@@ -60,15 +71,18 @@ var Module = Command.extend({
           
           set(data, 'description', results.description)
           set(data, 'repo', results.repo)
-      
-          templates.forEach(function(fileName) {
-              gulp.src(path.join(__dirname, '../templates', fileName))
-                  .pipe(template(data))
-                  .pipe(gulp.dest(pluginPath))
-                  .pipe(print(function(path) {
-                      console.log('created '.green + last(path.split('/')))
-                  }))
-          })
+          
+          gulp.src(path.join(__dirname, '../templates/**'), { dot: true })
+              .pipe(template(data, {
+                  interpolate: /{{([\s\S]+?)}}/g 
+              }))
+              .pipe(rename(function(path) {
+                  if(path.basename === 'module') path.basename = module
+              }))
+              .pipe(gulp.dest(module))
+              .pipe(print(function(path) {
+                  console.log('created '.green + last(path.split('/')))
+              }))
       })
   }
 })

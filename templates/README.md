@@ -1,17 +1,17 @@
-vueui-<%= module %> ```v0.1.0```
+vueui-{{ module }} ```v0.1.0```
 ================================
 
-<%= description %>
+{{ description }}
 
 ### Installation
 ```bash
-npm install --save vueui-<%= module %>
+npm install --save vueui-{{ module }}
 ```
 
 ### Usage
 ```js
 var Vue = require('vue');
-var <%= module %> = require('vueui-<%= module %>');
+var {{ module }} = require('vueui-{{ module }}');
 
-Vue.use(<%= module %>)
+Vue.use({{ module }})
 ```
