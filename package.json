@@ -1,6 +1,7 @@
 {
   "name": "vueui-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "a CLI utility to scaffold a new Vue UI module",
   "preferGlobal": true,
   "dependencies": {
     "101": "^0.8.0",
