@@ -8,6 +8,7 @@ var path = require('path'),
     template = require('gulp-template'),
     print = require('gulp-print'),
     rename = require('gulp-rename'),
+    git = require('gulp-git'),
     set = require('101/set'),
     last = require('101/last')
 
@@ -72,6 +73,13 @@ var Module = Command.extend({
           set(data, 'description', results.description)
           set(data, 'repo', results.repo)
           
+          // Initialize a git repo
+          gulp.src(path.join('./', module))
+              .pipe(git.init())
+              //.pipe(git.remote())
+          
+          
+          // Interpolate and copy the template files for this module
           gulp.src(path.join(__dirname, '../templates/**'), { dot: true })
               .pipe(template(data, {
                   interpolate: /{{([\s\S]+?)}}/g 
@@ -79,6 +87,7 @@ var Module = Command.extend({
               .pipe(rename(function(path) {
                   if(path.basename === 'module') path.basename = module
               }))
+              .pipe(git.add())
               .pipe(gulp.dest(module))
               .pipe(print(function(path) {
                   console.log('created '.green + last(path.split('/')))

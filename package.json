@@ -10,7 +10,8 @@
     "prompt": "^0.2.14",
     "gulp-print": "^1.1.0",
     "colors": "^1.0.3",
-    "gulp-rename": "^1.2.0"
+    "gulp-rename": "^1.2.0",
+    "gulp-git": "^0.5.5"
   },
   "bin": {
     "vueui": "./bin/vueui"
