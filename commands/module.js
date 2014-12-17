@@ -12,18 +12,6 @@ var path = require('path'),
     set = require('101/set'),
     last = require('101/last')
 
-var templates = [ 
-    'package.json', 
-    'README.md', 
-    'LICENSE', 
-    'index.js',
-    'module.js',
-    '.gitignore',
-    'example/webpack.config.js',
-    'example/main.js',
-    'example/index.html'
-]
-
 
 var Module = Command.extend({
   desc: 'Scaffold the boilerplate for a new Vue-UI module',
@@ -54,11 +42,16 @@ var Module = Command.extend({
           properties: {
               description: {
                   type: 'string',
-                  description: 'Enter a description for this module:',
+                  description: 'Enter a description for this module',
                   default: 'A Vue-UI module.'
               },
+              username: {
+                  description: 'Github username',
+                  default: 'vueui',
+                  type: 'string'
+              },
               repo: {
-                  description: 'A Github repo where the module will live:',
+                  description: 'A Github repo where the module will live',
                   default: 'github.com/vueui/' + module,
                   type: 'string'
               }
@@ -73,25 +66,49 @@ var Module = Command.extend({
           set(data, 'description', results.description)
           set(data, 'repo', results.repo)
           
-          // Initialize a git repo
-          gulp.src(path.join('./', module))
-              .pipe(git.init())
-              //.pipe(git.remote())
+          // Init an empty Git repo
+          gulp.task('init', function(cb) {
+              git.init({ cwd: pluginPath }, function(err) {
+                  if(err) {
+                      throw new Error(err.message)
+                  }
+                  cb()
+              })
+          })
           
+          gulp.task('addRemote', function(cb) {
+              var repo = 'git@github.com:' + results.username + '/' + repo + '.git'
+              git.addRemote('origin', repo, {cwd: pluginPath}, function(err) {
+                  if(err) {
+                      throw new Error(err.message)
+                  }
+                  cb()
+              })
+          })
           
           // Interpolate and copy the template files for this module
-          gulp.src(path.join(__dirname, '../templates/**'), { dot: true })
-              .pipe(template(data, {
-                  interpolate: /{{([\s\S]+?)}}/g 
-              }))
-              .pipe(rename(function(path) {
-                  if(path.basename === 'module') path.basename = module
-              }))
-              .pipe(git.add())
-              .pipe(gulp.dest(module))
-              .pipe(print(function(path) {
-                  console.log('created '.green + last(path.split('/')))
-              }))
+          gulp.task('templates', [ 'init' ], function() {
+              return gulp.src(path.join(__dirname, '../templates/**'), { dot: true })
+                  .pipe(template(data, {
+                      interpolate: /{{([\s\S]+?)}}/g 
+                  }))
+                  .pipe(rename(function(path) {
+                      if(path.basename === 'module') path.basename = module
+                  }))
+                  .pipe(gulp.dest(module))
+                  .pipe(print(function(path) {
+                      console.log('created '.green + last(path.split('/')))
+                  }))
+                  .pipe(git.add({cwd: pluginPath}))
+                  .pipe(git.commit('first commit', {cwd: pluginPath}))
+          })
+          
+          
+          gulp.task('all', [ 'templates'], function() {
+              console.log('Completed everything')
+          })
+          
+          gulp.start('all')
       })
   }
 })
