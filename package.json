@@ -1,5 +1,5 @@
 {
-  "name": "vueui-cli",
+  "name": "vueui",
   "version": "0.1.0",
   "preferGlobal": true,
   "dependencies": {
