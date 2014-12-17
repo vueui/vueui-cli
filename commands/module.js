@@ -52,7 +52,7 @@ var Module = Command.extend({
               },
               repo: {
                   description: 'A Github repo where the module will live',
-                  default: 'github.com/vueui/' + module,
+                  default: module,
                   type: 'string'
               }
           }
@@ -64,6 +64,7 @@ var Module = Command.extend({
           }
           
           set(data, 'description', results.description)
+          set(data, 'username', results.username)
           set(data, 'repo', results.repo)
           
           // Init an empty Git repo

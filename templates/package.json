@@ -16,10 +16,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://{{ repo }}.git"
+        "url": "git://github.com:{{ username }}/{{ repo }}.git"
     },
     "bugs": {
-        "url": "https://{{ repo }}/issues"
+        "url": "https://github.com/{{ username }}/{{ repo }}/issues"
     },
     "keywords": [
         "Vue-UI",
