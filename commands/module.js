@@ -9,14 +9,21 @@ var path = require('path'),
     print = require('gulp-print'),
     rename = require('gulp-rename'),
     git = require('gulp-git'),
+    download = require('gulp-download'),
     set = require('101/set'),
     last = require('101/last')
 
 
 var Module = Command.extend({
   desc: 'Scaffold the boilerplate for a new Vue-UI module',
+    
+    options: {
+        remote: {
+            type: 'string'
+        }
+    }, 
   
-  run: function (module) {
+  run: function (remote, module) {
       var data = {}
 
       if(!module) {
@@ -104,9 +111,19 @@ var Module = Command.extend({
                   .pipe(git.commit('first commit', {cwd: pluginPath}))
           })
           
+          gulp.task('getRemotes', function(cb) {
+              var urls = ['.css', '.js'].map(function(ext) { return remote + ext; }).map(function(file) { 
+                  return 'https://raw.githubusercontent.com/Semantic-Org/UI-' + remote + '/master/' + file
+              })
+              
+              return download(urls)
+                  .pipe(gulp.dest(pluginPath + '/dist'))
+          })
           
-          gulp.task('all', [ 'templates'], function() {
-              console.log('Completed everything')
+          gulp.task('all', [ 'templates' ], function() {
+              if(remote) {
+                  gulp.start('getRemotes')
+              }
           })
           
           gulp.start('all')
