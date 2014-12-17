@@ -2,6 +2,7 @@
     "name": "vueui-<%= module %>",
     "version": "0.1.0",
     "description": "<%= description %>",
+    "main": "index.js",
     "dependencies": {
     },
     "repository": {

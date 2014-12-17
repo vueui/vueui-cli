@@ -1,6 +1,7 @@
 var Command = require('ronin').Command,
     prompt = require('prompt'),
-    colors = require('colors')
+    colors = require('colors'),
+    fs = require('fs')
 
 var path = require('path'),
     gulp = require('gulp'),
@@ -9,19 +10,13 @@ var path = require('path'),
     set = require('101/set'),
     last = require('101/last')
 
-var templates = [ 'package.json', 'README.md', 'LICENSE' ]
+var templates = [ 'package.json', 'README.md', 'LICENSE', 'index.js' ]
 
 
 var Module = Command.extend({
   desc: 'Scaffold the boilerplate for a new Vue-UI module',
   
-  options: {
-    type: {
-      type: 'string'
-    }
-  },
-  
-  run: function (type, module) {
+  run: function (module) {
       var data = {}
 
       if(!module) {
@@ -30,6 +25,17 @@ var Module = Command.extend({
       
       set(data, 'module', module)
       
+      // Attempt to create the plugin folder with the 'module' name
+      var pluginPath = path.join('./', module)
+      
+      if(fs.existsSync(pluginPath)) {
+          throw new Error('A directory with the name of ' + module + ' already exists in this directory')
+      } else {
+          fs.mkdirSync(pluginPath)
+      }
+      
+      
+      // Prompt for the data we need to generate the templates      
       prompt.start()
       
       var schema = {
@@ -58,10 +64,10 @@ var Module = Command.extend({
           templates.forEach(function(fileName) {
               gulp.src(path.join(__dirname, '../templates', fileName))
                   .pipe(template(data))
+                  .pipe(gulp.dest(pluginPath))
                   .pipe(print(function(path) {
                       console.log('created '.green + last(path.split('/')))
                   }))
-                  .pipe(gulp.dest('dist'))
           })
       })
   }

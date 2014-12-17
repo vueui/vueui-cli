@@ -1,6 +1,7 @@
 {
   "name": "vueui-cli",
   "version": "0.1.0",
+  "preferGlobal": true,
   "dependencies": {
     "101": "^0.8.0",
     "ronin": "^0.1.2",
